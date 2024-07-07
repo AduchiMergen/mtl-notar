@@ -9,244 +9,253 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.3.0/stellar-sdk.min.js"></script>
 </head>
 <body class="bg-gray-100 p-8">
-<div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
-    <h1 class="text-3xl font-bold mb-6 text-center">MTL Нотариат</h1>
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold mb-6 text-center">MTL Нотариат</h1>
 
-    <div class="mb-4 flex justify-between">
-        <button class="action-btn flex-1 bg-blue-500 text-white px-4 py-2 rounded-l" data-action="create">Создать
-        </button>
-        <button class="action-btn flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-r" data-action="verify">Проверить
-        </button>
-    </div>
+        <div class="mb-4 flex justify-between">
+            <button class="action-btn flex-1 bg-blue-500 text-white px-4 py-2 rounded-l" data-action="create">Создать</button>
+            <button class="action-btn flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-r" data-action="verify">Проверить</button>
+        </div>
 
-    <div class="mb-4 flex justify-between">
-        <button class="input-type-btn flex-1 bg-blue-500 text-white px-4 py-2 rounded-l" data-type="text">Текст</button>
-        <button class="input-type-btn flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-r" data-type="file">Файл
-        </button>
-    </div>
+        <div class="mb-4 flex justify-between">
+            <button class="input-type-btn flex-1 bg-blue-500 text-white px-4 py-2 rounded-l" data-type="text">Текст</button>
+            <button class="input-type-btn flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-r" data-type="file">Файл</button>
+        </div>
 
-    <div id="textInput" class="mb-4">
-        <textarea id="inputText" class="w-full p-2 border rounded" rows="4" placeholder="Введите текст"></textarea>
-    </div>
+        <div id="textInput" class="mb-4">
+            <textarea id="inputText" class="w-full p-2 border rounded" rows="4" placeholder="Введите текст"></textarea>
+        </div>
 
-    <div id="fileInput" class="mb-4 hidden">
-        <input type="file" id="inputFile" class="w-full p-2 border rounded">
-    </div>
+        <div id="fileInput" class="mb-4 hidden">
+            <input type="file" id="inputFile" class="w-full p-2 border rounded">
+        </div>
 
-    <div id="hashInput" class="mb-4 hidden">
-        <input type="text" id="inputHash" class="w-full p-2 border rounded" placeholder="Введите хеш для проверки">
-    </div>
+        <div id="hashInput" class="mb-4 hidden">
+            <input type="text" id="inputHash" class="w-full p-2 border rounded" placeholder="Введите хеш для проверки">
+        </div>
 
-    <div id="hashOutput" class="mb-4">
-        <p>SHA-256 хеш (нажмите, чтобы скопировать):</p>
-        <p id="hashResult"
-           class="font-mono bg-gray-100 p-2 rounded break-all cursor-pointer hover:bg-gray-200 h-10 overflow-auto"></p>
-    </div>
+        <div id="hashOutput" class="mb-4">
+            <p>SHA-256 хеш (нажмите, чтобы скопировать):</p>
+            <p id="hashResult" class="font-mono bg-gray-100 p-2 rounded break-all cursor-pointer hover:bg-gray-200 h-20 overflow-auto"></p>
+        </div>
 
-    <div id="stellarAddresses" class="mb-4 hidden">
-        <p class="mb-2 text-sm text-gray-600">
-            Введите адреса Stellar для создания транзакции. Первый адрес будет инициатором транзакции,
-            он заплатит комиссию, и ему нельзя будет делать исходящие транзакции до завершения подписания этого
-            договора.
-        </p>
-        <div class="stellar-address mb-2 flex items-center">
-            <span class="mr-2">❓</span>
-            <input type="text" class="flex-grow p-2 border rounded" placeholder="Введите адрес Stellar"
-                   oninput="checkAndAddAddress(this)">
+        <div id="stellarAddresses" class="mb-4 hidden">
+            <p class="mb-2 text-sm text-gray-600">
+                Введите адреса Stellar для создания транзакции. Первый адрес будет инициатором транзакции,
+                он заплатит комиссию, и ему нельзя будет делать исходящие транзакции до завершения подписания этого договора.
+            </p>
+            <div class="stellar-address mb-2 flex items-center">
+                <span class="mr-2">❓</span>
+                <input type="text" class="flex-grow p-2 border rounded" placeholder="Введите адрес Stellar" oninput="checkAndAddAddress(this)">
+            </div>
+        </div>
+
+        <button id="actionBtn" class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Выполнить</button>
+
+        <div id="xdrOutput" class="mt-4 hidden">
+            <p>XDR транзакции (нажмите, чтобы скопировать):</p>
+            <p id="xdrResult" class="font-mono bg-gray-100 p-2 rounded break-all cursor-pointer hover:bg-gray-200 h-20 overflow-auto"></p>
+            
+            <div class="mt-4 bg-yellow-100 p-4 rounded-lg">
+                <h3 class="font-bold mb-2">Инструкция по использованию XDR:</h3>
+                <ol class="list-decimal list-inside">
+                    <li>Скопируйте XDR в буфер обмена, кликнув по нему выше</li>
+                    <li>Перейдите на сайт <a href="https://eurmtl.me/sign_tools" target="_blank" class="text-blue-600 hover:underline">https://eurmtl.me/sign_tools</a></li>
+                    <li>В поле "description" введите текст, понятный всем подписантам (например, о чем договор)</li>
+                    <li>Вставьте XDR в поле "Transaction body"</li>
+                    <li>Нажмите кнопку "Create"</li>
+                    <li>Скопируйте URL транзакции и предоставьте его всем подписантам</li>
+                </ol>
+            </div>
         </div>
     </div>
 
-    <button id="actionBtn" class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Выполнить
-    </button>
+    <script>
+        const actionBtns = document.querySelectorAll('.action-btn');
+        const inputTypeBtns = document.querySelectorAll('.input-type-btn');
+        const textInput = document.getElementById('textInput');
+        const fileInput = document.getElementById('fileInput');
+        const hashInput = document.getElementById('hashInput');
+        const hashOutput = document.getElementById('hashOutput');
+        const stellarAddresses = document.getElementById('stellarAddresses');
+        const actionBtn = document.getElementById('actionBtn');
+        const inputText = document.getElementById('inputText');
+        const inputFile = document.getElementById('inputFile');
+        const hashResult = document.getElementById('hashResult');
+        const xdrOutput = document.getElementById('xdrOutput');
+        const xdrResult = document.getElementById('xdrResult');
 
-    <div id="xdrOutput" class="mt-4 hidden">
-        <p>XDR транзакции (нажмите, чтобы скопировать):</p>
-        <p id="xdrResult"
-           class="font-mono bg-gray-100 p-2 rounded break-all cursor-pointer hover:bg-gray-200 h-20 overflow-auto"></p>
-        <div class="mt-4 bg-yellow-100 p-4 rounded-lg">
-            <h3 class="font-bold mb-2">Инструкция по использованию XDR:</h3>
-            <ol class="list-decimal list-inside">
-                <li>Скопируйте XDR в буфер обмена, кликнув по нему выше</li>
-                <li>Перейдите на сайт <a href="https://eurmtl.me/sign_tools" target="_blank"
-                                         class="text-blue-600 hover:underline">https://eurmtl.me/sign_tools</a></li>
-                <li>В поле "description" введите текст, понятный всем подписантам (например, о чем договор)</li>
-                <li>Вставьте XDR в поле "Transaction body"</li>
-                <li>Нажмите кнопку "Create"</li>
-                <li>Скопируйте URL транзакции и предоставьте его всем подписантам</li>
-            </ol>
-        </div>
-    </div>
-</div>
+        let currentAction = 'create';
+        let currentInputType = 'text';
 
-<script>
-  const actionBtns = document.querySelectorAll('.action-btn');
-  const inputTypeBtns = document.querySelectorAll('.input-type-btn');
-  const textInput = document.getElementById('textInput');
-  const fileInput = document.getElementById('fileInput');
-  const hashInput = document.getElementById('hashInput');
-  const hashOutput = document.getElementById('hashOutput');
-  const stellarAddresses = document.getElementById('stellarAddresses');
-  const actionBtn = document.getElementById('actionBtn');
-  const inputText = document.getElementById('inputText');
-  const inputFile = document.getElementById('inputFile');
-  const hashResult = document.getElementById('hashResult');
-  const xdrOutput = document.getElementById('xdrOutput');
-  const xdrResult = document.getElementById('xdrResult');
+        function hideXDR() {
+            xdrOutput.classList.add('hidden');
+            xdrResult.textContent = '';
+        }
 
-  let currentAction = 'create';
-  let currentInputType = 'text';
+        function updateView() {
+            textInput.style.display = currentInputType === 'text' ? 'block' : 'none';
+            fileInput.style.display = currentInputType === 'file' ? 'block' : 'none';
+            hashInput.style.display = currentAction === 'verify' ? 'block' : 'none';
+            stellarAddresses.style.display = currentAction === 'create' ? 'block' : 'none';
+            actionBtn.textContent = currentAction === 'create' ? 'Создать транзакцию' : 'Проверить';
+            hideXDR();
+        }
 
-  function updateView() {
-    textInput.style.display = currentInputType === 'text' ? 'block' : 'none';
-    fileInput.style.display = currentInputType === 'file' ? 'block' : 'none';
-    hashInput.style.display = currentAction === 'verify' ? 'block' : 'none';
-    stellarAddresses.style.display = currentAction === 'create' ? 'block' : 'none';
-    actionBtn.textContent = currentAction === 'create' ? 'Создать транзакцию' : 'Проверить';
-  }
+        function setActiveButton(buttons, activeButton) {
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'text-white');
+                btn.classList.add('bg-gray-300', 'text-gray-700');
+            });
+            activeButton.classList.remove('bg-gray-300', 'text-gray-700');
+            activeButton.classList.add('bg-blue-500', 'text-white');
+        }
 
-  function setActiveButton(buttons, activeButton) {
-    buttons.forEach(btn => {
-      btn.classList.remove('bg-blue-500', 'text-white');
-      btn.classList.add('bg-gray-300', 'text-gray-700');
-    });
-    activeButton.classList.remove('bg-gray-300', 'text-gray-700');
-    activeButton.classList.add('bg-blue-500', 'text-white');
-  }
+        actionBtns.forEach(btn => btn.addEventListener('click', function() {
+            currentAction = this.dataset.action;
+            setActiveButton(actionBtns, this);
+            updateView();
+            calculateHash();
+        }));
 
-  actionBtns.forEach(btn => btn.addEventListener('click', function () {
-    currentAction = this.dataset.action;
-    setActiveButton(actionBtns, this);
-    updateView();
-    calculateHash();
-  }));
+        inputTypeBtns.forEach(btn => btn.addEventListener('click', function() {
+            currentInputType = this.dataset.type;
+            setActiveButton(inputTypeBtns, this);
+            updateView();
+            calculateHash();
+        }));
 
-  inputTypeBtns.forEach(btn => btn.addEventListener('click', function () {
-    currentInputType = this.dataset.type;
-    setActiveButton(inputTypeBtns, this);
-    updateView();
-    calculateHash();
-  }));
+        function checkAndAddAddress(input) {
+            const addressContainer = input.closest('.stellar-address');
+            const statusSpan = addressContainer.querySelector('span');
+            const isValid = /^G[A-Za-z0-9]{55}$/.test(input.value);
+            statusSpan.textContent = isValid ? '✅' : '❌';
 
-  function checkAndAddAddress(input) {
-    const addressContainer = input.closest('.stellar-address');
-    const statusSpan = addressContainer.querySelector('span');
-    const isValid = /^G[A-Za-z0-9]{55}$/.test(input.value);
-    statusSpan.textContent = isValid ? '✅' : '❌';
+            if (input.value && input === stellarAddresses.lastElementChild.querySelector('input')) {
+                const newAddress = document.createElement('div');
+                newAddress.className = 'stellar-address mb-2 flex items-center';
+                newAddress.innerHTML = '<span class="mr-2">❓</span><input type="text" class="flex-grow p-2 border rounded" placeholder="Введите адрес Stellar" oninput="checkAndAddAddress(this)">';
+                stellarAddresses.appendChild(newAddress);
+            }
+            hideXDR();
+        }
 
-    if (input.value && input === stellarAddresses.lastElementChild.querySelector('input')) {
-      const newAddress = document.createElement('div');
-      newAddress.className = 'stellar-address mb-2 flex items-center';
-      newAddress.innerHTML = '<span class="mr-2">❓</span><input type="text" class="flex-grow p-2 border rounded" placeholder="Введите адрес Stellar" oninput="checkAndAddAddress(this)">';
-      stellarAddresses.appendChild(newAddress);
-    }
-  }
+        async function calculateHash() {
+            let content = '';
+            if (currentInputType === 'text') {
+                content = inputText.value;
+            } else {
+                const file = inputFile.files[0];
+                if (file) {
+                    content = await file.text();
+                }
+            }
 
-  async function calculateHash() {
-    let content = '';
-    if (currentInputType === 'text') {
-      content = inputText.value;
-    } else {
-      const file = inputFile.files[0];
-      if (file) {
-        content = await file.text();
-      }
-    }
+            if (content) {
+                const calculatedHash = sha256(content);
+                hashResult.textContent = calculatedHash;
 
-    if (content) {
-      const calculatedHash = sha256(content);
-      hashResult.textContent = calculatedHash;
+                if (currentAction === 'verify') {
+                    verifyHash(calculatedHash);
+                } else {
+                    hashResult.classList.remove('text-green-500', 'text-red-500');
+                }
+            } else {
+                hashResult.textContent = '';
+            }
+            hideXDR();
+        }
 
-      if (currentAction === 'verify') {
-        verifyHash(calculatedHash);
-      } else {
-        hashResult.classList.remove('text-green-500', 'text-red-500');
-      }
-    } else {
-      hashResult.textContent = '';
-    }
-  }
+        function verifyHash(calculatedHash) {
+            const inputHash = document.getElementById('inputHash').value.toLowerCase();
+            if (inputHash) {
+                if (calculatedHash === inputHash) {
+                    hashResult.classList.remove('text-red-500');
+                    hashResult.classList.add('text-green-500');
+                    hashResult.textContent += ' ✅ Хеши совпадают';
+                } else {
+                    hashResult.classList.remove('text-green-500');
+                    hashResult.classList.add('text-red-500');
+                    hashResult.textContent += ' ❌ Хеши не совпадают';
+                }
+            }
+        }
 
-  function verifyHash(calculatedHash) {
-    const inputHash = document.getElementById('inputHash').value.toLowerCase();
-    if (inputHash) {
-      if (calculatedHash === inputHash) {
-        hashResult.classList.remove('text-red-500');
-        hashResult.classList.add('text-green-500');
-        hashResult.textContent += ' ✅ Хеши совпадают';
-      } else {
-        hashResult.classList.remove('text-green-500');
-        hashResult.classList.add('text-red-500');
-        hashResult.textContent += ' ❌ Хеши не совпадают';
-      }
-    }
-  }
+        async function createStellarTransaction() {
+            const server = new StellarSdk.Server('https://horizon.stellar.org');
+            const addresses = Array.from(stellarAddresses.querySelectorAll('input')).map(input => input.value).filter(addr => addr);
 
-  async function createStellarTransaction() {
-    const server = new StellarSdk.Server('https://horizon.stellar.org');
-    const addresses = Array.from(stellarAddresses.querySelectorAll('input')).map(input => input.value).filter(addr => addr);
+            if (addresses.length === 0) {
+                alert('Введите хотя бы один адрес Stellar');
+                return;
+            }
 
-    if (addresses.length === 0) {
-      alert('Введите хотя бы один адрес Stellar');
-      return;
-    }
+            const sourceAccount = await server.loadAccount(addresses[0]);
+            const fee = 10000; // Устанавливаем фиксированную комиссию в 10000 строков
+            const contractHash = hashResult.textContent.split(' ')[0];
 
-    const sourceAccount = await server.loadAccount(addresses[0]);
-    const fee = await server.fetchBaseFee();
-    const contractHash = hashResult.textContent.split(' ')[0];
+            const transaction = new StellarSdk.TransactionBuilder(sourceAccount, {
+                fee,
+                networkPassphrase: StellarSdk.Networks.PUBLIC
+            })
+            .addMemo(StellarSdk.Memo.hash(contractHash))
+            .setTimeout(180);
 
-    const transaction = new StellarSdk.TransactionBuilder(sourceAccount, {
-      fee,
-      networkPassphrase: StellarSdk.Networks.PUBLIC
-    })
-        .addMemo(StellarSdk.Memo.hash(contractHash))
-        .setTimeout(StellarSdk.TimeoutInfinite)
-    ;
+            for (let i = 0; i < addresses.length; i++) {
+                const from = addresses[i];
+                const to = addresses[(i + 1) % addresses.length];
+                transaction.addOperation(StellarSdk.Operation.payment({
+                    source: from, // Добавляем source для каждой операции
+                    destination: to,
+                    asset: StellarSdk.Asset.native(),
+                    amount: '0.1785001'
+                }));
+            }
 
-    for (let i = 0; i < addresses.length; i++) {
-      const from = addresses[i];
-      const to = addresses[(i + 1) % addresses.length];
-      transaction.addOperation(StellarSdk.Operation.payment({
-        destination: to,
-        asset: StellarSdk.Asset.native(),
-        amount: '0.1785001'
-      }));
-    }
+            const builtTx = transaction.build();
+            const xdr = builtTx.toXDR();
+            xdrResult.textContent = xdr;
+            xdrOutput.classList.remove('hidden');
+        }
 
-    const builtTx = transaction.build();
-    const xdr = builtTx.toXDR();
-    xdrResult.textContent = xdr;
-    xdrOutput.classList.remove('hidden');
-  }
+        inputText.addEventListener('input', () => {
+            calculateHash();
+            hideXDR();
+        });
+        inputFile.addEventListener('change', () => {
+            calculateHash();
+            hideXDR();
+        });
+        document.getElementById('inputHash').addEventListener('input', () => {
+            calculateHash();
+            hideXDR();
+        });
 
-  inputText.addEventListener('input', calculateHash);
-  inputFile.addEventListener('change', calculateHash);
-  document.getElementById('inputHash').addEventListener('input', calculateHash);
+        actionBtn.addEventListener('click', () => {
+            if (currentAction === 'create') {
+                createStellarTransaction();
+            } else {
+                calculateHash();
+            }
+        });
 
-  actionBtn.addEventListener('click', () => {
-    if (currentAction === 'create') {
-      createStellarTransaction();
-    } else {
-      calculateHash();
-    }
-  });
+        hashResult.addEventListener('click', copyToClipboard);
+        xdrResult.addEventListener('click', copyToClipboard);
 
-  hashResult.addEventListener('click', copyToClipboard);
-  xdrResult.addEventListener('click', copyToClipboard);
+        function copyToClipboard(event) {
+            const text = event.target.textContent.split(' ')[0];
+            if (text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = event.target.textContent;
+                    event.target.textContent = 'Скопировано!';
+                    setTimeout(() => {
+                        event.target.textContent = originalText;
+                    }, 1000);
+                });
+            }
+        }
 
-  function copyToClipboard(event) {
-    const text = event.target.textContent.split(' ')[0];
-    if (text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const originalText = event.target.textContent;
-        event.target.textContent = 'Скопировано!';
-        setTimeout(() => {
-          event.target.textContent = originalText;
-        }, 1000);
-      });
-    }
-  }
-
-  updateView();
-</script>
+        updateView();
+    </script>
 </body>
 </html>
