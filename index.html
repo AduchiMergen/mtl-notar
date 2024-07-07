@@ -36,7 +36,8 @@
 
         <div id="hashOutput" class="mb-4">
             <p>SHA-256 хеш (нажмите, чтобы скопировать):</p>
-            <p id="hashResult" class="font-mono bg-gray-100 p-2 rounded break-all cursor-pointer hover:bg-gray-200 h-10 overflow-auto"></p>
+            <p id="hashResult" class="font-mono bg-gray-100 p-2 rounded break-all cursor-pointer hover:bg-gray-200 min-h-10 overflow-auto"></p>
+            <p id="isSameHash"></p>
         </div>
 
         <div id="stellarAddresses" class="mb-4 hidden">
@@ -82,6 +83,7 @@
         const inputText = document.getElementById('inputText');
         const inputFile = document.getElementById('inputFile');
         const hashResult = document.getElementById('hashResult');
+        const isSameHash = document.getElementById('isSameHash');
         const xdrOutput = document.getElementById('xdrOutput');
         const xdrResult = document.getElementById('xdrResult');
 
@@ -98,7 +100,7 @@
             fileInput.style.display = currentInputType === 'file' ? 'block' : 'none';
             hashInput.style.display = currentAction === 'verify' ? 'block' : 'none';
             stellarAddresses.style.display = currentAction === 'create' ? 'block' : 'none';
-            actionBtn.textContent = currentAction === 'create' ? 'Создать транзакцию' : 'Проверить';
+            actionBtn.style.display = currentAction === 'create' ? 'block' : 'none';
             hideXDR();
         }
 
@@ -154,6 +156,7 @@
             if (content) {
                 const calculatedHash = sha256(content);
                 hashResult.textContent = calculatedHash;
+                isSameHash.textContent = '';
 
                 if (currentAction === 'verify') {
                     verifyHash(calculatedHash);
@@ -162,6 +165,7 @@
                 }
             } else {
                 hashResult.textContent = '';
+                isSameHash.textContent = '';
             }
             hideXDR();
         }
@@ -172,11 +176,11 @@
                 if (calculatedHash === inputHash) {
                     hashResult.classList.remove('text-red-500');
                     hashResult.classList.add('text-green-500');
-                    hashResult.textContent += ' ✅ Хеши совпадают';
+                    isSameHash.textContent = ' ✅ Хеши совпадают';
                 } else {
                     hashResult.classList.remove('text-green-500');
                     hashResult.classList.add('text-red-500');
-                    hashResult.textContent += ' ❌ Хеши не совпадают';
+                    isSameHash.textContent = ' ❌ Хеши не совпадают';
                 }
             }
         }
